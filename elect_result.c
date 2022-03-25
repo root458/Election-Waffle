@@ -12,6 +12,7 @@ struct Vote
 
 // Functions
 int tally_votes();
+void print_candidate_on_line(int line_number, char path[30]);
 void vote_position();
 void vote_for_candidates();
 char *remove_new_line(char *strbuffer);
@@ -30,6 +31,26 @@ int tally_votes()
 {
 
     return 0;
+}
+
+void print_candidate_on_line(int line_number, char path[30])
+{
+
+    FILE *fileptr;
+    fileptr = fopen(path, "r");
+
+    char line_str[30];
+    int read_number = 1;
+
+    while (fgets(line_str, sizeof(line_str), fileptr))
+    {
+        if (read_number == line_number) {
+            printf("%s", remove_new_line(line_str));
+        }
+        read_number++;
+    }
+
+    fclose(fileptr);
 }
 
 void vote_position(char position[30])
@@ -54,32 +75,36 @@ void vote_position(char position[30])
     while (fgets(read_name, sizeof(read_name), candfileptr))
     {
         printf("\n\t\t%d. %s", line_number, remove_new_line(read_name));
+        line_number++;
     }
 
     fclose(candfileptr);
 
     // Vote confirmation variables
     char confirm[1];
+    int candidate_selection;
 
     while (true)
     {
-        printf("\n\t\tType your selection: ");
-        scanf("%s", read_name);
+        printf("\n\n\t\t[#] Your selection: ");
+        scanf("%d", &candidate_selection);
 
-        printf("\n\t\tYour %s selection: %s\n\n", position_title, read_name);
+        printf("\n\t\tYour %s selection: ", position_title);
+        print_candidate_on_line(candidate_selection, path);
 
-        printf("\n\t\tConfirm [y/n]: ");
+        printf("\n\n\t\t[--] Confirm [y/n]: ");
         scanf("%s", confirm);
 
-        if (!strcmp(confirm, "n")) {
+        if (!strcmp(confirm, "n"))
+        {
             continue;
-        } else {
+        }
+        else
+        {
             system("clear");
             break;
         }
-
     }
-    
 }
 
 void vote_for_candidates()
