@@ -12,9 +12,10 @@ struct Vote
 
 // Functions
 int tally_votes();
-void print_candidate_on_line(int line_number, char path[30]);
 void vote_position();
 void vote_for_candidates();
+int get_number_of_candidates(char path[30]);
+void print_candidate_on_line(int line_number, char path[30]);
 char *remove_new_line(char *strbuffer);
 bool authenticate_voter(int voter_id);
 
@@ -23,6 +24,10 @@ int main()
 {
 
     vote_for_candidates();
+
+    int end;
+    printf("\n\n\t\tPress <ENTER> to exit: ");
+    scanf("%d", &end);
 
     return 0;
 }
@@ -33,29 +38,9 @@ int tally_votes()
     return 0;
 }
 
-void print_candidate_on_line(int line_number, char path[30])
-{
-
-    FILE *fileptr;
-    fileptr = fopen(path, "r");
-
-    char line_str[30];
-    int read_number = 1;
-
-    while (fgets(line_str, sizeof(line_str), fileptr))
-    {
-        if (read_number == line_number) {
-            printf("%s", remove_new_line(line_str));
-        }
-        read_number++;
-    }
-
-    fclose(fileptr);
-}
-
 void vote_position(char position[30])
 {
-    printf("\n\t\t< Position: %s >\n\n\t\tCandidates\n", position);
+    printf("\n\t\t<<< Position: %s >>>\n\n\t\tCandidates\n", position);
 
     char position_title[30];
     strcpy(position_title, position);
@@ -88,6 +73,11 @@ void vote_position(char position[30])
     {
         printf("\n\n\t\t[#] Your selection: ");
         scanf("%d", &candidate_selection);
+
+        if (candidate_selection > get_number_of_candidates(path))
+        {
+            continue;
+        }
 
         printf("\n\t\tYour %s selection: ", position_title);
         print_candidate_on_line(candidate_selection, path);
@@ -125,6 +115,45 @@ void vote_for_candidates()
         // Display candidates to choose from
         vote_position(position_titles[i]);
     }
+}
+
+int get_number_of_candidates(char path[30])
+{
+    FILE *fileptr;
+    fileptr = fopen(path, "r");
+
+    char line_str[30];
+    int read_number = 1;
+
+    while (fgets(line_str, sizeof(line_str), fileptr))
+    {
+        read_number++;
+    }
+
+    fclose(fileptr);
+
+    return read_number;
+}
+
+void print_candidate_on_line(int line_number, char path[30])
+{
+
+    FILE *fileptr;
+    fileptr = fopen(path, "r");
+
+    char line_str[30];
+    int read_number = 1;
+
+    while (fgets(line_str, sizeof(line_str), fileptr))
+    {
+        if (read_number == line_number)
+        {
+            printf("%s", remove_new_line(line_str));
+        }
+        read_number++;
+    }
+
+    fclose(fileptr);
 }
 
 char *remove_new_line(char *strbuffer)
