@@ -34,19 +34,15 @@ int tally_votes()
 
 void vote_position(char position[30])
 {
-    printf("\n\t\tPosition: %s\n\t\tCandidates\n", position);
+    printf("\n\t\t< Position: %s >\n\n\t\tCandidates\n", position);
 
-    strcat(position, ".txt");
-    printf("%s", position);
-
-    // Variables for reading file
-    char path[20] = "candidates/";
-
+    char position_title[30];
+    strcpy(position_title, position);
     // Prepare path
-    strcat(position, ".txt");
+    char path[20] = "candidates/";
+    char extension[] = ".txt";
+    strcat(position, extension);
     strcat(path, position);
-
-    printf("%s", path);
 
     // Set up file details
     FILE *candfileptr;
@@ -57,15 +53,33 @@ void vote_position(char position[30])
 
     while (fgets(read_name, sizeof(read_name), candfileptr))
     {
-        printf("\n\t\t%d. %s", line_number, read_name);
+        printf("\n\t\t%d. %s", line_number, remove_new_line(read_name));
     }
 
     fclose(candfileptr);
 
-    printf("\n\t\tType your selection: ");
-    scanf("%s", read_name);
+    // Vote confirmation variables
+    char confirm[1];
 
-    printf("\n\t\t%s", read_name);
+    while (true)
+    {
+        printf("\n\t\tType your selection: ");
+        scanf("%s", read_name);
+
+        printf("\n\t\tYour %s selection: %s\n\n", position_title, read_name);
+
+        printf("\n\t\tConfirm [y/n]: ");
+        scanf("%s", confirm);
+
+        if (!strcmp(confirm, "n")) {
+            continue;
+        } else {
+            system("clear");
+            break;
+        }
+
+    }
+    
 }
 
 void vote_for_candidates()
@@ -79,9 +93,10 @@ void vote_for_candidates()
         "Treasurer",
         "Secretary"};
     size_t positions = 3;
+
+    printf("\n\t\tVOTING\n\t\tMake your best selections\n");
     for (size_t i = 0; i < positions; i++)
     {
-        printf("\n\t\tVOTING\n\t\tMake your best selections\n");
         // Display candidates to choose from
         vote_position(position_titles[i]);
     }
