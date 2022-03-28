@@ -25,10 +25,6 @@ int main()
 
     vote_for_candidates();
 
-    int end;
-    printf("\n\n\t\tPress <ENTER> to exit: ");
-    scanf("%d", &end);
-
     return 0;
 }
 
